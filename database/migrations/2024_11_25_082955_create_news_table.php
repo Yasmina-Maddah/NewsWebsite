@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('content');
+            $table->integer('restricted_age')->nullable(); 
+            $table->foreignId('admin_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
