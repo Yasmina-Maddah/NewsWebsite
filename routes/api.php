@@ -19,3 +19,10 @@ Route::middleware(['auth:web'])->group(function () {
     Route::get('/news/{id}', [NewsController::class, 'show']);
     Route::get('/news/{id}/articles', [ArticleController::class, 'getArticlesForNews']);
 });
+    Route::middleware(['jwt.user'])->group(function () {
+        Route::post('/articles', [ArticleController::class, 'createArticle']);
+        Route::delete('/articles/{id}', [ArticleController::class, 'deleteArticle']);
+        Route::get('/news', [NewsController::class, 'index']);
+        Route::get('/news/{id}', [NewsController::class, 'show']);
+        Route::get('/news/{id}/articles', [ArticleController::class, 'getArticlesForNews']);
+}); 
