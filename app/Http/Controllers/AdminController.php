@@ -3,27 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use app\Models\News;
 
-<?php
-
-namespace App\Models;
-
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-class Admin extends Authenticatable
+class AdminController extends Controller
 {
-    use HasFactory;
-
-    protected $fillable = ['name', 'email', 'password'];
-
-    public function news()
+    public function createNews(Request $request)
     {
-        return $this->hasMany(News::class);
-    }
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'restricted_age' => 'nullable|integer',
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ]);
 
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = bcrypt($value);
+        $path = $request->hasFile('attachment') ? $request->file('attachment')->store('attachments') : null;
+
+        $news = News::create(array_merge($validated, ['attachment' => $path, 'admin_id' => auth()->id()]));
+
+        return response()->json(['message' => 'News created successfully', 'data' => $news], 201);
     }
 }
